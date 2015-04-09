@@ -20,7 +20,6 @@ package org.apache.hadoop.hbase.regionserver;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.HRegionInfo;
@@ -39,10 +38,10 @@ import org.apache.phoenix.jdbc.PhoenixConnection;
 import org.apache.phoenix.parse.AlterIndexStatement;
 import org.apache.phoenix.parse.ParseNodeFactory;
 import org.apache.phoenix.schema.MetaDataClient;
-import org.apache.phoenix.schema.types.PBoolean;
 import org.apache.phoenix.schema.PIndexState;
 import org.apache.phoenix.schema.PTable;
 import org.apache.phoenix.schema.PTable.IndexType;
+import org.apache.phoenix.schema.types.PBoolean;
 import org.apache.phoenix.util.IndexUtil;
 import org.apache.phoenix.util.MetaDataUtil;
 import org.apache.phoenix.util.PhoenixRuntime;
@@ -86,9 +85,6 @@ public class LocalIndexSplitter extends BaseRegionObserver {
                 int encodedVersion = VersionUtil.encodeVersion(environment.getHBaseVersion());
                 if(encodedVersion >= SPLIT_TXN_MINIMUM_SUPPORTED_VERSION) {
                     st = new SplitTransaction(indexRegion, splitKey);
-                    st.useZKForAssignment =
-                            environment.getConfiguration().getBoolean("hbase.assignment.usezk",
-                                true);
                 } else {
                     st = new IndexSplitTransaction(indexRegion, splitKey);
                 }
@@ -165,7 +161,7 @@ public class LocalIndexSplitter extends BaseRegionObserver {
         HRegionServer rs = (HRegionServer) environment.getRegionServerServices();
         st.stepsAfterPONR(rs, rs, daughterRegions);
     }
-    
+
     @Override
     public void preRollBackSplit(ObserverContext<RegionCoprocessorEnvironment> ctx)
             throws IOException {

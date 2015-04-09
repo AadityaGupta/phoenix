@@ -17,16 +17,6 @@
  */
 package org.apache.phoenix.end2end;
 
-import static org.apache.hadoop.hbase.HColumnDescriptor.DEFAULT_REPLICATION_SCOPE;
-import static org.apache.phoenix.util.TestUtil.TEST_PROPERTIES;
-import static org.apache.phoenix.util.TestUtil.closeConnection;
-import static org.apache.phoenix.util.TestUtil.closeStatement;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,10 +27,9 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
-
 import org.apache.hadoop.hbase.HColumnDescriptor;
+import static org.apache.hadoop.hbase.HColumnDescriptor.DEFAULT_REPLICATION_SCOPE;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.KeepDeletedCells;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.phoenix.coprocessor.MetaDataProtocol;
@@ -56,6 +45,14 @@ import org.apache.phoenix.util.PhoenixRuntime;
 import org.apache.phoenix.util.PropertiesUtil;
 import org.apache.phoenix.util.ReadOnlyProps;
 import org.apache.phoenix.util.SchemaUtil;
+import static org.apache.phoenix.util.TestUtil.TEST_PROPERTIES;
+import static org.apache.phoenix.util.TestUtil.closeConnection;
+import static org.apache.phoenix.util.TestUtil.closeStatement;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -356,7 +353,7 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
         assertEquals("x",rs.getString(2));
         assertEquals("j",rs.getString(3));
         assertFalse(rs.next());
-        
+
         // verify index table rows
         rs = conn.createStatement().executeQuery(indexTableQuery);
         assertTrue(rs.next());
@@ -364,7 +361,7 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
         assertEquals("a",rs.getString(2));
         assertEquals("j",rs.getString(3));
         assertFalse(rs.next());
-        
+
         // verify local index table rows
         rs = conn.createStatement().executeQuery(localIndexTableQuery);
         assertTrue(rs.next());
@@ -388,7 +385,7 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
         assertEquals("y",rs.getString(2));
         assertEquals("k",rs.getString(3));
         assertFalse(rs.next());
-        
+
         // verify index table rows
         rs = conn.createStatement().executeQuery(indexTableQuery);
         assertTrue(rs.next());
@@ -396,7 +393,7 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
         assertEquals("a",rs.getString(2));
         assertEquals("k",rs.getString(3));
         assertFalse(rs.next());
-        
+
         // verify local index table rows
         rs = conn.createStatement().executeQuery(localIndexTableQuery);
         assertTrue(rs.next());
@@ -1076,18 +1073,15 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
             assertEquals("0", columnFamilies[0].getNameAsString());
             assertEquals(8, columnFamilies[0].getMinVersions());
             assertEquals(10, columnFamilies[0].getMaxVersions());
-            assertEquals(KeepDeletedCells.FALSE, columnFamilies[0].getKeepDeletedCells());
 
             assertEquals("CF1", columnFamilies[1].getNameAsString());
             assertEquals(1, columnFamilies[1].getMinVersions());
             assertEquals(10, columnFamilies[1].getMaxVersions());
-            assertEquals(KeepDeletedCells.TRUE, columnFamilies[1].getKeepDeletedCells());
 
             assertEquals("CF2", columnFamilies[2].getNameAsString());
             assertEquals(3, columnFamilies[2].getMinVersions());
             assertEquals(10, columnFamilies[2].getMaxVersions());
-            assertEquals(KeepDeletedCells.FALSE, columnFamilies[2].getKeepDeletedCells());
-
+            
             assertEquals(Boolean.toString(false), tableDesc.getValue(HTableDescriptor.COMPACTION_ENABLED));
         }
     }
@@ -1873,11 +1867,11 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
         stmt.close();
 
     }
-    
+
     @Test
     public void testAddingPkColAndSettingProperties() throws Exception {
         Connection conn = DriverManager.getConnection(getUrl());
-        try {       
+        try {
             String ddl = "create table IF NOT EXISTS testAddingPkColAndSettingProperties ("
                     + " k1 char(1) NOT NULL,"
                     + " k2 integer NOT NULL,"
@@ -1946,11 +1940,11 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
             conn.close();
         }
     }
-    
+
     @Test
     public void testClientCacheUpdatedOnChangingPhoenixTableProperties() throws Exception {
         Connection conn = DriverManager.getConnection(getUrl());
-        try {       
+        try {
             String ddl = "create table IF NOT EXISTS TESTCHANGEPHOENIXPROPS ("
                     + " id char(1) NOT NULL,"
                     + " col1 integer NOT NULL,"
@@ -1959,23 +1953,23 @@ public class AlterTableIT extends BaseOwnClusterHBaseManagedTimeIT {
                     + " )";
             conn.createStatement().execute(ddl);
             asssertIsWALDisabled(conn, "TESTCHANGEPHOENIXPROPS", false);
-            
+
             ddl = "ALTER TABLE TESTCHANGEPHOENIXPROPS SET DISABLE_WAL = true";
             conn.createStatement().execute(ddl);
             // check metadata cache is updated with DISABLE_WAL = true
             asssertIsWALDisabled(conn, "TESTCHANGEPHOENIXPROPS", true);
-            
+
             ddl = "ALTER TABLE TESTCHANGEPHOENIXPROPS SET DISABLE_WAL = false";
             conn.createStatement().execute(ddl);
             // check metadata cache is updated with DISABLE_WAL = false
             asssertIsWALDisabled(conn, "TESTCHANGEPHOENIXPROPS", false);
-            
+
             ddl = "ALTER TABLE TESTCHANGEPHOENIXPROPS SET MULTI_TENANT = true";
             conn.createStatement().execute(ddl);
             // check metadata cache is updated with MULTI_TENANT = true
             PTable t = conn.unwrap(PhoenixConnection.class).getMetaDataCache().getTable(new PTableKey(null, "TESTCHANGEPHOENIXPROPS"));
             assertTrue(t.isMultiTenant());
-            
+
             // check table metadata updated server side
             ResultSet rs = conn.createStatement().executeQuery("SELECT DISABLE_WAL, MULTI_TENANT FROM SYSTEM.CATALOG " +
                     "WHERE table_name = 'TESTCHANGEPHOENIXPROPS' AND DISABLE_WAL IS NOT NULL AND MULTI_TENANT IS NOT NULL");
