@@ -17,12 +17,13 @@
  */
 package org.apache.phoenix.mapreduce;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -40,17 +41,14 @@ import org.apache.phoenix.mapreduce.util.ConnectionUtil;
 import org.apache.phoenix.mapreduce.util.PhoenixConfigurationUtil;
 import org.apache.phoenix.query.KeyRange;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-
 /**
  * {@link InputFormat} implementation from Phoenix.
- * 
+ *
  */
 public class PhoenixInputFormat<T extends DBWritable> extends InputFormat<NullWritable,T> {
 
     private static final Log LOG = LogFactory.getLog(PhoenixInputFormat.class);
-       
+
     /**
      * instantiated by framework
      */
@@ -60,18 +58,18 @@ public class PhoenixInputFormat<T extends DBWritable> extends InputFormat<NullWr
     @Override
     public RecordReader<NullWritable,T> createRecordReader(InputSplit split, TaskAttemptContext context)
             throws IOException, InterruptedException {
-        
+
         final Configuration configuration = context.getConfiguration();
         final QueryPlan queryPlan = getQueryPlan(context,configuration);
         @SuppressWarnings("unchecked")
         final Class<T> inputClass = (Class<T>) PhoenixConfigurationUtil.getInputClass(configuration);
         return new PhoenixRecordReader<T>(inputClass , configuration, queryPlan);
     }
-    
-   
+
+
 
     @Override
-    public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {  
+    public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
         final Configuration configuration = context.getConfiguration();
         final QueryPlan queryPlan = getQueryPlan(context,configuration);
         final List<KeyRange> allSplits = queryPlan.getSplits();
@@ -84,11 +82,14 @@ public class PhoenixInputFormat<T extends DBWritable> extends InputFormat<NullWr
         Preconditions.checkNotNull(splits);
         final List<InputSplit> psplits = Lists.newArrayListWithExpectedSize(splits.size());
         for (List<Scan> scans : qplan.getScans()) {
-            psplits.add(new PhoenixInputSplit(scans));
+            for (Scan scan : scans) {
+                psplits.add(new PhoenixInputSplit(Lists.newArrayList(scan)));
+            }
         }
+
         return psplits;
     }
-    
+
     /**
      * Returns the query plan associated with the select query.
      * @param context
