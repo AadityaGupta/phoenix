@@ -78,8 +78,8 @@
     <test.output.tofile>true</test.output.tofile>
 
     <!-- Hadoop Versions -->
-    <hbase.version>0.98.6-cdh5.3.2</hbase.version>
-    <hadoop-two.version>2.5.0-cdh5.3.2</hadoop-two.version>
+    <hbase.version>0.98.6-cdh5.3.3</hbase.version>
+    <hadoop-two.version>2.5.0-cdh5.3.3</hadoop-two.version>
 
     <!-- Dependency versions -->
     <commons-cli.version>1.2</commons-cli.version>
