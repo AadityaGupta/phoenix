@@ -291,9 +291,6 @@ public class PhoenixInputFormat<T extends DBWritable>
             LOG.info(startKey + " -> " + hosts[0]);
         }
 
-
-        LOG.info(result.toString());
-
         return result;
     }
 
