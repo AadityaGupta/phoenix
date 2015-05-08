@@ -285,8 +285,10 @@ public class PhoenixInputFormat<T extends DBWritable>
         }
 
         for (TableSplit split : splits) {
-            result.put(Bytes.toString(split.getStartRow())
-                    , split.getLocations());
+            String startKey = Bytes.toString(split.getStartRow());
+            String[] hosts = split.getLocations();
+            result.put(startKey, hosts);
+            LOG.info(startKey + " -> " + hosts[0]);
         }
 
 
