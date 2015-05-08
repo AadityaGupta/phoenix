@@ -117,22 +117,23 @@ public class PhoenixInputFormat<T extends DBWritable>
         final List<InputSplit> psplits = Lists.newArrayListWithExpectedSize(
                 splits.size());
         for (List<Scan> scans : qplan.getScans()) {
-            PhoenixInputSplit curr
-                    = new PhoenixInputSplit(scans);
+            for (Scan scan : scans) {
+                PhoenixInputSplit curr
+                        = new PhoenixInputSplit(Lists.newArrayList(scan));
 
-            String startKey = Bytes.toString(
-                    curr.getKeyRange().getLowerRange());
+                String startKey = Bytes.toString(scan.getStartRow());
 
-            if (partitionLocations != null) {
-                Map.Entry<String, String[]> partitionLocationEntry
-                        = partitionLocations.floorEntry(startKey);
+                if (partitionLocations != null) {
+                    Map.Entry<String, String[]> partitionLocationEntry
+                            = partitionLocations.floorEntry(startKey);
 
-                if (partitionLocationEntry != null) {
-                    curr.setLocations(partitionLocationEntry.getValue());
+                    if (partitionLocationEntry != null) {
+                        curr.setLocations(partitionLocationEntry.getValue());
+                    }
                 }
-            }
 
-            psplits.add(curr);
+                psplits.add(curr);
+            }
         }
 
         return psplits;
