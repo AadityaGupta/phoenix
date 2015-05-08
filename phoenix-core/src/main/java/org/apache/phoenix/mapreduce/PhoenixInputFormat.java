@@ -76,6 +76,7 @@ public class PhoenixInputFormat<T extends DBWritable>
     private HTable table;
     private String nameServer;
     private HashMap<InetAddress, String> reverseDNSCacheMap = new HashMap<>();
+    protected TreeMap<String, String[]> partitionLocations = new TreeMap<>();
 
     /**
      * instantiated by framework
@@ -112,8 +113,7 @@ public class PhoenixInputFormat<T extends DBWritable>
                     throws IOException {
         Preconditions.checkNotNull(qplan);
         Preconditions.checkNotNull(splits);
-        TreeMap<String, String[]> partitionLocations
-                = getPartitionLocations(context);
+        partitionLocations = getPartitionLocations(context);
         final List<InputSplit> psplits = Lists.newArrayListWithExpectedSize(
                 splits.size());
         for (List<Scan> scans : qplan.getScans()) {
