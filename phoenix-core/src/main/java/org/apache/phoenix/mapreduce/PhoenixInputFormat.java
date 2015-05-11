@@ -19,7 +19,6 @@ package org.apache.phoenix.mapreduce;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -113,7 +112,7 @@ public class PhoenixInputFormat<T extends DBWritable>
                     throws IOException {
         Preconditions.checkNotNull(qplan);
         Preconditions.checkNotNull(splits);
-        partitionLocations = getPartitionLocations(context);
+        fillPartitionLocations(context);
         final List<InputSplit> psplits = Lists.newArrayListWithExpectedSize(
                 splits.size());
         for (List<Scan> scans : qplan.getScans()) {
@@ -192,15 +191,14 @@ public class PhoenixInputFormat<T extends DBWritable>
      *
      * @return
      */
-    private TreeMap<String, String[]> getPartitionLocations(JobContext context)
-            throws IOException {
+    private void fillPartitionLocations(JobContext context) throws IOException {
         if (table == null) {
             LOG.warn("No hbase table was determined, so partition locations "
                     + "cannot be determined");
-            return null;
+            return;
         }
 
-        TreeMap<String, String[]> result = Maps.newTreeMap();
+        TreeMap<String, String[]> result = partitionLocations;
 
         // Get the name server address and the default value is null.
         nameServer = context.getConfiguration().get("hbase.nameserver.address"
@@ -290,8 +288,6 @@ public class PhoenixInputFormat<T extends DBWritable>
             result.put(startKey, hosts);
             LOG.info(startKey + " -> " + hosts[0]);
         }
-
-        return result;
     }
 
   private String reverseDNS(InetAddress ipAddress) throws NamingException {
