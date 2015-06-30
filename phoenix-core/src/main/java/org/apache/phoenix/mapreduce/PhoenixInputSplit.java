@@ -17,11 +17,12 @@
  */
 package org.apache.phoenix.mapreduce;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.protobuf.ProtobufUtil;
 import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
@@ -31,9 +32,6 @@ import org.apache.hadoop.io.WritableUtils;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.phoenix.query.KeyRange;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-
 /**
  * Input split class to hold the lower and upper bound range. {@link KeyRange}
  */
@@ -41,15 +39,16 @@ public class PhoenixInputSplit extends InputSplit implements Writable {
 
     private List<Scan> scans;
     private KeyRange keyRange;
-   
+    private String[] locations;
+
     /**
      * No Arg constructor
      */
     public PhoenixInputSplit() {
     }
-    
+
    /**
-    * 
+    *
     * @param keyRange
     */
     public PhoenixInputSplit(final List<Scan> scans) {
@@ -58,19 +57,19 @@ public class PhoenixInputSplit extends InputSplit implements Writable {
         this.scans = scans;
         init();
     }
-    
+
     public List<Scan> getScans() {
         return scans;
     }
-    
+
     public KeyRange getKeyRange() {
         return keyRange;
     }
-    
+
     private void init() {
         this.keyRange = KeyRange.getKeyRange(scans.get(0).getStartRow(), scans.get(scans.size()-1).getStopRow());
     }
-    
+
     @Override
     public void readFields(DataInput input) throws IOException {
         int count = WritableUtils.readVInt(input);
@@ -84,7 +83,7 @@ public class PhoenixInputSplit extends InputSplit implements Writable {
         }
         init();
     }
-    
+
     @Override
     public void write(DataOutput output) throws IOException {
         Preconditions.checkNotNull(scans);
@@ -104,7 +103,7 @@ public class PhoenixInputSplit extends InputSplit implements Writable {
 
     @Override
     public String[] getLocations() throws IOException, InterruptedException {
-        return new String[]{};
+        return locations;
     }
 
     @Override
@@ -125,6 +124,13 @@ public class PhoenixInputSplit extends InputSplit implements Writable {
             if (other.keyRange != null) { return false; }
         } else if (!keyRange.equals(other.keyRange)) { return false; }
         return true;
+    }
+
+    /**
+     * @param locations the locations to set
+     */
+    public void setLocations(String[] locations) {
+        this.locations = locations;
     }
 
 }
