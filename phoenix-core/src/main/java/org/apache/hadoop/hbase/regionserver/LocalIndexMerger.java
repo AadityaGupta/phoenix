@@ -79,9 +79,13 @@ public class LocalIndexMerger extends BaseRegionServerObserver {
                     return;
                 }
                 this.mergedRegion = rmt.stepsBeforePONR(rss, rss, false);
-                rmt.prepareMutationsForMerge(mergedRegion.getRegionInfo(),
-                    indexRegionA.getRegionInfo(), indexRegionB.getRegionInfo(),
-                    rss.getServerName(), metaEntries);
+                rmt.prepareMutationsForMerge(mergedRegion.getRegionInfo()
+                        , indexRegionA.getRegionInfo()
+                        , indexRegionB.getRegionInfo()
+                        , rss.getServerName()
+                        , metaEntries
+                        , 3);
+                
             } catch (Exception e) {
                 ctx.bypass();
                 LOG.warn("index regions merge failed with the exception ", e);

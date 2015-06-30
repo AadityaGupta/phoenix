@@ -18,10 +18,7 @@
  */
 package org.apache.hadoop.hbase.regionserver;
 
-import static org.apache.hadoop.hbase.executor.EventType.RS_ZK_REQUEST_REGION_SPLIT;
-import static org.apache.hadoop.hbase.executor.EventType.RS_ZK_REGION_SPLIT;
-import static org.apache.hadoop.hbase.executor.EventType.RS_ZK_REGION_SPLITTING;
-
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
@@ -35,7 +32,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -50,20 +46,21 @@ import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.executor.EventType;
+import static org.apache.hadoop.hbase.executor.EventType.RS_ZK_REGION_SPLIT;
+import static org.apache.hadoop.hbase.executor.EventType.RS_ZK_REGION_SPLITTING;
+import static org.apache.hadoop.hbase.executor.EventType.RS_ZK_REQUEST_REGION_SPLIT;
 import org.apache.hadoop.hbase.io.Reference;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.util.CancelableProgressable;
-import org.apache.phoenix.util.EnvironmentEdgeManager;
 import org.apache.hadoop.hbase.util.HasThread;
 import org.apache.hadoop.hbase.util.PairOfSameType;
 import org.apache.hadoop.hbase.zookeeper.ZKAssign;
 import org.apache.hadoop.hbase.zookeeper.ZKUtil;
 import org.apache.hadoop.hbase.zookeeper.ZooKeeperWatcher;
+import org.apache.phoenix.util.EnvironmentEdgeManager;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.data.Stat;
-
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /**
  * Executes region split as a "transaction".  Call {@link #prepare()} to setup
@@ -286,9 +283,12 @@ public class IndexSplitTransaction extends SplitTransaction {
     // and assign the parent region.
     if (!testing) {
       if (metaEntries == null || metaEntries.isEmpty()) {
-        MetaTableAccessor.splitRegion(server.getConnection(), parent.getRegionInfo(),
-                daughterRegions.getFirst().getRegionInfo(),
-                daughterRegions.getSecond().getRegionInfo(), server.getServerName());
+        MetaTableAccessor.splitRegion(server.getConnection()
+                , parent.getRegionInfo()
+                , daughterRegions.getFirst().getRegionInfo()
+                , daughterRegions.getSecond().getRegionInfo()
+                , server.getServerName()
+                , 3);
       } else {
         offlineParentInMetaAndputMetaEntries(server.getConnection(),
           parent.getRegionInfo(), daughterRegions.getFirst().getRegionInfo(), daughterRegions
@@ -595,7 +595,7 @@ public class IndexSplitTransaction extends SplitTransaction {
     Put putParent = MetaTableAccessor.makePutFromRegionInfo(copyOfParent);
     MetaTableAccessor.addDaughtersToPut(putParent, splitA, splitB);
     mutations.add(putParent);
-    
+
     //Puts for daughters
     Put putA = MetaTableAccessor.makePutFromRegionInfo(splitA);
     Put putB = MetaTableAccessor.makePutFromRegionInfo(splitB);
@@ -971,7 +971,7 @@ public class IndexSplitTransaction extends SplitTransaction {
     return ZKAssign.transitionNode(zkw, parent, serverName,
       beginState, endState, znodeVersion, payload);
   }
-  
+
   public HRegion getParent() {
     return this.parent;
   }

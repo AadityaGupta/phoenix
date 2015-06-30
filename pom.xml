@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.phoenix</groupId>
@@ -57,6 +57,10 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>cloudera-repo-releases</id>
+      <url>https://repository.cloudera.com/artifactory/repo/</url>
+    </repository>
   </repositories>
 
   <parent>
@@ -79,7 +83,7 @@
     <top.dir>${project.basedir}</top.dir>
 
     <!-- Hadoop Versions -->
-    <hbase.version>1.0.1</hbase.version>
+    <hbase.version>1.0.0-cdh5.4.1</hbase.version>
     <hadoop-two.version>2.5.1</hadoop-two.version>
 
     <!-- Dependency versions -->
@@ -120,15 +124,15 @@
     <maven-build-helper-plugin.version>1.9.1</maven-build-helper-plugin.version>
     <maven-surefire-plugin.version>2.18</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.18</maven-failsafe-plugin.version>
-    
+
     <maven-dependency-plugin.version>2.1</maven-dependency-plugin.version>
     <maven.assembly.version>2.5.2</maven.assembly.version>
     <maven.rat.version>0.8</maven.rat.version>
-    
+
     <!-- Plugin options -->
     <numForkedUT>3</numForkedUT>
     <numForkedIT>5</numForkedIT>
-    
+
     <!-- Set default encoding so multi-byte tests work correctly on the Mac -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -146,7 +150,7 @@
             <target>1.7</target>
           </configuration>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -394,7 +398,7 @@
         <configuration>
           <forkCount>${numForkedUT}</forkCount>
           <reuseForks>true</reuseForks>
-          <argLine>-enableassertions -Xmx2250m -XX:MaxPermSize=128m 
+          <argLine>-enableassertions -Xmx2250m -XX:MaxPermSize=128m
             -Djava.security.egd=file:/dev/./urandom "-Djava.library.path=${hadoop.library.path}${path.separator}${java.library.path}"</argLine>
           <redirectTestOutputToFile>${test.output.tofile}</redirectTestOutputToFile>
         </configuration>
