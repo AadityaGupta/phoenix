@@ -56,6 +56,7 @@ import org.apache.hadoop.mapreduce.lib.db.DBWritable;
 import org.apache.hadoop.net.DNS;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.phoenix.compile.QueryPlan;
+import org.apache.phoenix.iterate.MapReduceParallelScanGrouper;
 import org.apache.phoenix.jdbc.PhoenixStatement;
 import org.apache.phoenix.mapreduce.util.ConnectionUtil;
 import org.apache.phoenix.mapreduce.util.PhoenixConfigurationUtil;
@@ -171,7 +172,7 @@ public class PhoenixInputFormat<T extends DBWritable>
             // Optimize the query plan so that we potentially use secondary indexes
             final QueryPlan queryPlan = pstmt.optimizeQuery(selectStatement);
             // Initialize the query plan so it sets up the parallel scans
-            queryPlan.iterator();
+            queryPlan.iterator(MapReduceParallelScanGrouper.getInstance());
             return queryPlan;
         }
         catch (Exception exception) {
