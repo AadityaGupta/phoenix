@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import org.apache.hadoop.hbase.HRegionLocation;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Mutation;
@@ -51,15 +51,20 @@ public class DelegateConnectionQueryServices extends DelegateQueryServices imple
     public DelegateConnectionQueryServices(ConnectionQueryServices delegate) {
         super(delegate);
     }
-    
+
     @Override
     protected ConnectionQueryServices getDelegate() {
         return (ConnectionQueryServices)super.getDelegate();
     }
-    
+
     @Override
     public ConnectionQueryServices getChildQueryServices(ImmutableBytesWritable tenantId) {
         return getDelegate().getChildQueryServices(tenantId);
+    }
+
+    @Override
+    public Connection getHbaseConnection() {
+        return getDelegate().getHbaseConnection();
     }
 
     @Override
@@ -132,7 +137,7 @@ public class DelegateConnectionQueryServices extends DelegateQueryServices imple
     public MetaDataMutationResult updateIndexState(List<Mutation> tableMetadata, String parentTableName) throws SQLException {
         return getDelegate().updateIndexState(tableMetadata, parentTableName);
     }
-    
+
     @Override
     public void init(String url, Properties props) throws SQLException {
         getDelegate().init(url, props);
@@ -229,7 +234,7 @@ public class DelegateConnectionQueryServices extends DelegateQueryServices imple
     public String getUserName() {
         return getDelegate().getUserName();
     }
-    
+
     @Override
     public void clearTableFromCache(byte[] tenantId, byte[] schemaName, byte[] tableName, long clientTS)
             throws SQLException {
