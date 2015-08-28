@@ -17,8 +17,8 @@
  */
 package org.apache.phoenix.query;
 
-import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.INDEX_STATE_BYTES;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HRegionInfo;
 import org.apache.hadoop.hbase.HRegionLocation;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.ServerName;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Mutation;
@@ -51,6 +51,7 @@ import org.apache.phoenix.hbase.index.util.GenericKeyValueBuilder;
 import org.apache.phoenix.hbase.index.util.KeyValueBuilder;
 import org.apache.phoenix.jdbc.PhoenixConnection;
 import org.apache.phoenix.jdbc.PhoenixDatabaseMetaData;
+import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.INDEX_STATE_BYTES;
 import org.apache.phoenix.jdbc.PhoenixEmbeddedDriver.ConnectionInfo;
 import org.apache.phoenix.parse.PFunction;
 import org.apache.phoenix.schema.FunctionNotFoundException;
@@ -81,21 +82,18 @@ import org.apache.phoenix.util.PropertiesUtil;
 import org.apache.phoenix.util.SchemaUtil;
 import org.apache.phoenix.util.SequenceUtil;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 
 /**
  *
  * Implementation of ConnectionQueryServices used in testing where no connection to
  * an hbase cluster is necessary.
- * 
- * 
+ *
+ *
  * @since 0.1
  */
 public class ConnectionlessQueryServicesImpl extends DelegateQueryServices implements ConnectionQueryServices  {
     private static ServerName SERVER_NAME = ServerName.parseServerName(HConstants.LOCALHOST + Addressing.HOSTNAME_PORT_SEPARATOR + HConstants.DEFAULT_ZOOKEPER_CLIENT_PORT);
-    
+
     private PMetaData metaData;
     private final Map<SequenceKey, SequenceInfo> sequenceMap = Maps.newHashMap();
     private final String userName;
@@ -103,12 +101,12 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
     private volatile boolean initialized;
     private volatile SQLException initializationException;
     private final Map<String, List<HRegionLocation>> tableSplits = Maps.newHashMap();
-    
+
     public ConnectionlessQueryServicesImpl(QueryServices queryServices, ConnectionInfo connInfo) {
         super(queryServices);
         userName = connInfo.getPrincipal();
         metaData = newEmptyMetaData();
-        
+
         // Use KeyValueBuilder that builds real KeyValues, as our test utils require this
         this.kvBuilder = GenericKeyValueBuilder.INSTANCE;
     }
@@ -122,6 +120,11 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
     @Override
     public ConnectionQueryServices getChildQueryServices(ImmutableBytesWritable childId) {
         return this; // Just reuse the same query services
+    }
+
+    @Override
+    public Connection getHbaseConnection() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -163,7 +166,7 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
         return metaData = metaData.removeColumn(tenantId, tableName, columnsToRemove, tableTimeStamp, tableSeqNum);
     }
 
-    
+
     @Override
     public PhoenixConnection connect(String url, Properties info) throws SQLException {
         return new PhoenixConnection(this, url, info, metaData);
@@ -194,7 +197,7 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
         byte[] tableBytes = rowKeyMetadata[PhoenixDatabaseMetaData.TABLE_NAME_INDEX];
         return SchemaUtil.getTableNameAsBytes(schemaBytes, tableBytes);
     }
-    
+
     private static List<HRegionLocation> generateRegionLocations(byte[] physicalName, byte[][] splits) {
         byte[] startKey = HConstants.EMPTY_START_ROW;
         List<HRegionLocation> regions = Lists.newArrayListWithExpectedSize(splits.length);
@@ -209,7 +212,7 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
                 SERVER_NAME, -1));
         return regions;
     }
-    
+
     @Override
     public MetaDataMutationResult createTable(List<Mutation> tableMetaData, byte[] physicalName, PTableType tableType, Map<String,Object> tableProps, List<Pair<byte[],Map<String,Object>>> families, byte[][] splits) throws SQLException {
         if (splits != null) {
@@ -235,7 +238,7 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
     public MetaDataMutationResult dropColumn(List<Mutation> tableMetadata, PTableType tableType) throws SQLException {
         return new MetaDataMutationResult(MutationCode.TABLE_ALREADY_EXISTS, 0, null);
     }
-    
+
     @Override
     public void clearTableFromCache(byte[] tenantId, byte[] schemaName, byte[] tableName, long clientTS)
             throws SQLException {}
@@ -285,7 +288,7 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
                     // A TableAlreadyExistsException is not thrown, since the table only exists *after* this
                     // fixed timestamp.
                 }
-                
+
                 try {
                    metaConnection.createStatement().executeUpdate(QueryConstants.CREATE_FUNCTION_METADATA);
                 } catch (NewerTableAlreadyExistsException ignore) {
@@ -394,7 +397,7 @@ public class ConnectionlessQueryServicesImpl extends DelegateQueryServices imple
             if (info == null) {
                 exceptions[i] = new SequenceNotFoundException(sequenceAllocation.getSequenceKey().getSchemaName(), sequenceAllocation.getSequenceKey().getSequenceName());
             } else {
-                values[i] = info.sequenceValue;          
+                values[i] = info.sequenceValue;
             }
             i++;
         }
