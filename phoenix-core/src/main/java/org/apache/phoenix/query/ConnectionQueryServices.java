@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import org.apache.hadoop.hbase.HRegionLocation;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Mutation;
@@ -56,12 +56,14 @@ public interface ConnectionQueryServices extends QueryServices, MetaDataMutated 
      */
     public ConnectionQueryServices getChildQueryServices(ImmutableBytesWritable tenantId);
 
+    public Connection getHbaseConnection();
+
     /**
      * Get an HTableInterface by the given name. It is the callers
      * responsibility to close the returned HTableInterface.
      * @param tableName the name of the HTable
      * @return the HTableInterface
-     * @throws SQLException 
+     * @throws SQLException
      */
     public HTableInterface getTable(byte[] tableName) throws SQLException;
 
@@ -89,7 +91,7 @@ public interface ConnectionQueryServices extends QueryServices, MetaDataMutated 
     void clearTableRegionCache(byte[] tableName) throws SQLException;
 
     boolean hasInvalidIndexConfiguration();
-    
+
     long createSequence(String tenantId, String schemaName, String sequenceName, long startWith, long incrementBy, long cacheSize, long minValue, long maxValue, boolean cycle, long timestamp) throws SQLException;
     long dropSequence(String tenantId, String schemaName, String sequenceName, long timestamp) throws SQLException;
     void validateSequences(List<SequenceAllocation> sequenceAllocations, long timestamp, long[] values, SQLException[] exceptions, Sequence.ValueOp action) throws SQLException;
@@ -105,15 +107,15 @@ public interface ConnectionQueryServices extends QueryServices, MetaDataMutated 
      * @return the {@link KeyValueBuilder} that is valid for the locally installed version of HBase.
      */
     public KeyValueBuilder getKeyValueBuilder();
-    
+
     public enum Feature {LOCAL_INDEX};
     public boolean supportsFeature(Feature feature);
-    
+
     public String getUserName();
     public void clearTableFromCache(final byte[] tenantId, final byte[] schemaName, final byte[] tableName, long clientTS) throws SQLException;
 
     public PTableStats getTableStats(byte[] physicalName, long clientTimeStamp) throws SQLException;
-    
+
     public void clearCache() throws SQLException;
     public int getSequenceSaltBuckets();
 }

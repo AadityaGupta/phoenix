@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.phoenix</groupId>
   <artifactId>phoenix</artifactId>
-  <version>4.5.2-HBase-1.0</version>
+  <version>4.4.1-HBase-1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache Phoenix</name>
   <description>A SQL layer over HBase</description>
@@ -80,16 +80,15 @@
     <antlr-input.dir>src/main/antlr3</antlr-input.dir>
     <antlr-output.dir>target/generated-sources/antlr3</antlr-output.dir>
     <test.output.tofile>true</test.output.tofile>
-    <top.dir>${project.basedir}</top.dir>
 
     <!-- Hadoop Versions -->
     <hbase.version>1.0.0-cdh5.4.1</hbase.version>
-    <hadoop-two.version>2.5.1</hadoop-two.version>
+    <hadoop-two.version>2.6.0-cdh5.4.4</hadoop-two.version>
 
     <!-- Dependency versions -->
     <commons-cli.version>1.2</commons-cli.version>
-    <hadoop.version>2.5.1</hadoop.version>
-    <pig.version>0.13.0</pig.version>
+    <hadoop.version>2.6.0-cdh5.4.4</hadoop.version>
+    <pig.version>0.12.0</pig.version>
     <jackson.version>1.8.8</jackson.version>
     <antlr.version>3.5</antlr.version>
     <log4j.version>1.2.17</log4j.version>
@@ -113,7 +112,7 @@
     <collections.version>3.2.1</collections.version>
     <jodatime.version>2.7</jodatime.version>
     <joni.version>2.1.2</joni.version>
-    <calcite.version>1.3.0-incubating</calcite.version>
+    <calcite.version>1.2.0-incubating</calcite.version>
 
     <!-- Test Dependencies -->
     <mockito-all.version>1.8.5</mockito-all.version>
@@ -335,28 +334,6 @@
     </pluginManagement>
 
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.13</version>
-        <executions>
-          <execution>
-            <id>validate</id>
-            <phase>validate</phase>
-            <configuration>
-              <configLocation>${top.dir}/src/main/config/checkstyle/checker.xml</configLocation>
-              <suppressionsLocation>${top.dir}/src/main/config/checkstyle/suppressions.xml</suppressionsLocation>
-              <consoleOutput>true</consoleOutput>
-              <headerLocation>${top.dir}/src/main/config/checkstyle/header.txt</headerLocation>
-              <failOnViolation><!--true-->false</failOnViolation>
-              <includeTestSourceDirectory><!--true-->false</includeTestSourceDirectory>
-            </configuration>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -753,22 +730,9 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
-            <executions>
-              <execution>
-              <id>sign-artifacts</id>
-              <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
         </plugins>
       </build>
     </profile>
+
   </profiles>
 </project>
