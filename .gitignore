@@ -22,3 +22,4 @@
 target/
 release/
 **/nbactions.xml
+*.versionsBackup
