@@ -76,6 +76,17 @@
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/phoenix.git</developerConnection>
   </scm>
 
+  <distributionManagement>
+      <repository>
+          <id>mode-maven-repo</id>
+          <url>http://ggcsapp02.glam.colo:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+          <id>mode-maven-snapshot-repo</id>
+          <url>http://ggcsapp02.glam.colo:8081/nexus/content/repositories/snapshots</url>
+      </snapshotRepository>
+  </distributionManagement>
+
   <properties>
     <!-- General Properties -->
     <antlr-input.dir>src/main/antlr3</antlr-input.dir>
