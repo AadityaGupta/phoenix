@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.phoenix</groupId>
   <artifactId>phoenix</artifactId>
-  <version>4.5.2-cdh5.4.7-0.1-SNAPSHOT</version>
+  <version>4.5.2-cdh5.4.7-0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache Phoenix</name>
   <description>A SQL layer over HBase</description>
@@ -73,17 +72,14 @@
     <connection>scm:git:git@github.com:glammedia/phoenix.git</connection>
     <url>https://github.com/glammedia/phoenix</url>
     <developerConnection>scm:git:git@github.com:glammedia/phoenix.git</developerConnection>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
       <repository>
-          <id>mode-maven-repo</id>
-          <url>http://ggcsapp02.glam.colo:8081/nexus/content/repositories/releases</url>
+          <id>mode-third-party-maven-repo</id>
+          <url>http://ggcsapp02.glam.colo:8081/nexus/content/repositories/thirdparty</url>
       </repository>
-      <snapshotRepository>
-          <id>mode-maven-snapshot-repo</id>
-          <url>http://ggcsapp02.glam.colo:8081/nexus/content/repositories/snapshots</url>
-      </snapshotRepository>
   </distributionManagement>
 
   <properties>
