@@ -141,6 +141,9 @@
     <!-- Set default encoding so multi-byte tests work correctly on the Mac -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- prevent javadoc errors from failing the build :( -->
+    <additionalparam>-Xdoclint:none</additionalparam>
   </properties>
 
   <build>
