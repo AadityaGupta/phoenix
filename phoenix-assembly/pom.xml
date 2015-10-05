@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.phoenix</groupId>
     <artifactId>phoenix</artifactId>
-    <version>4.5.2-cdh5.4.7-0.2-SNAPSHOT</version>
+    <version>0.0.1-phx4.5.2-cdh5.4.7-SNAPSHOT</version>
   </parent>
   <artifactId>phoenix-assembly</artifactId>
   <name>Phoenix Assembly</name>
