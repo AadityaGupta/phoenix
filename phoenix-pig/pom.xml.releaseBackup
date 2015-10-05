@@ -25,17 +25,17 @@
   <parent>
     <groupId>org.apache.phoenix</groupId>
     <artifactId>phoenix</artifactId>
-    <version>4.5.2-1-cdh5.4.7-SNAPSHOT</version>
+    <version>0.0.1-phx4.5.2-cdh5.4.7-SNAPSHOT</version>
   </parent>
-  <artifactId>phoenix-flume</artifactId>
-  <name>Phoenix - Flume</name>
+  <artifactId>phoenix-pig</artifactId>
+  <name>Phoenix - Pig</name>
 
   <properties>
     <top.dir>${project.basedir}/..</top.dir>
   </properties>
 
   <dependencies>
-   <dependency>
+    <dependency>
       <groupId>org.apache.phoenix</groupId>
       <artifactId>phoenix-core</artifactId>
     </dependency>
@@ -46,44 +46,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.flume</groupId>
-      <artifactId>flume-ng-core</artifactId>
-    </dependency>
-
-    <!-- Test Dependencies -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.github.stephenc.high-scale-lib</groupId>
-      <artifactId>high-scale-lib</artifactId>
-      <version>1.1.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.yammer.metrics</groupId>
-      <artifactId>metrics-core</artifactId>
-      <version>2.1.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
-      <version>3.2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.htrace</groupId>
-      <artifactId>htrace-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-all</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
+      <groupId>org.apache.pig</groupId>
+      <artifactId>pig</artifactId>
+      <classifier>h2</classifier>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -167,6 +136,15 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-minicluster</artifactId>
+    </dependency>
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 
