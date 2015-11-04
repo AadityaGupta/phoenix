@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.phoenix</groupId>
     <artifactId>phoenix</artifactId>
-    <version>4.5.2-5-cdh5.4.7-SNAPSHOT</version>
+    <version>4.5.2-5-cdh5.4.7</version>
   </parent>
   <artifactId>phoenix-pig</artifactId>
   <name>Phoenix - Pig</name>
