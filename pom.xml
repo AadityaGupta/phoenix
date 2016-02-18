@@ -71,11 +71,11 @@
   </parent>
 
   <scm>
-    <connection>scm:git:http://git-wip-us.apache.org/repos/asf/phoenix.git</connection>
-    <url>https://git-wip-us.apache.org/repos/asf/phoenix.git</url>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/phoenix.git</developerConnection>
+    <connection>scm:git:git@github.com:glammedia/phoenix.git</connection>
+    <url>https://github.com/glammedia/phoenix</url>
+    <developerConnection>scm:git:git@github.com:glammedia/phoenix.git</developerConnection>
   </scm>
-
+  
   <distributionManagement>
       <repository>
           <id>mode-third-party-maven-repo</id>
@@ -346,6 +346,14 @@
     </pluginManagement>
 
     <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.4.2</version>
+            <configuration>
+                <tagNameFormat>phoenix-@{project.version}</tagNameFormat>
+            </configuration>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
