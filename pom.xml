@@ -75,7 +75,7 @@
     <developerConnection>scm:git:git@github.com:glammedia/phoenix.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
-  
+
   <distributionManagement>
       <repository>
           <id>mode-third-party-maven-repo</id>
@@ -121,7 +121,7 @@
     <jodatime.version>2.7</jodatime.version>
     <joni.version>2.1.2</joni.version>
     <jettyVersion>8.1.7.v20120910</jettyVersion>
-    <calcite.version>1.4.0-incubating</calcite.version>
+    <calcite.version>1.7.1</calcite.version>
 
     <!-- Test Dependencies -->
     <mockito-all.version>1.8.5</mockito-all.version>
