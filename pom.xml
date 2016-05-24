@@ -79,7 +79,7 @@
   <distributionManagement>
       <repository>
           <id>mode-third-party-maven-repo</id>
-          <url>http://maven.mode.com:8081/nexus/content/repositories/thirdparty</url>
+          <url>http://maven.mode.com/nexus/content/repositories/thirdparty</url>
       </repository>
   </distributionManagement>
 
