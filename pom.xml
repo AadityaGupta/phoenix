@@ -61,6 +61,10 @@
       <id>cloudera-repo-releases</id>
       <url>https://repository.cloudera.com/artifactory/repo/</url>
     </repository>
+    <repository>
+      <id>mode-maven-repo</id>
+      <url>http://maven.mode.com/nexus/content/groups/public/</url>
+    </repository>
   </repositories>
 
   <parent>
@@ -121,7 +125,7 @@
     <jodatime.version>2.7</jodatime.version>
     <joni.version>2.1.2</joni.version>
     <jettyVersion>8.1.7.v20120910</jettyVersion>
-    <calcite.version>1.7.1</calcite.version>
+    <calcite.version>1.7.1-2-cdh5.4.7</calcite.version>
 
     <!-- Test Dependencies -->
     <mockito-all.version>1.8.5</mockito-all.version>
