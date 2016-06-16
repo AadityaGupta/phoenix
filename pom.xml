@@ -85,6 +85,10 @@
           <id>mode-third-party-maven-repo</id>
           <url>http://maven.mode.com/nexus/content/repositories/thirdparty</url>
       </repository>
+      <snapshotRepository>
+          <id>dev-repo</id>
+          <url>http://maven.mode.com/nexus/content/repositories/snapshots</url>
+      </snapshotRepository>
   </distributionManagement>
 
   <properties>
